@@ -1,23 +1,3 @@
-var count: node<int?>;
+@library("std", "7.8.162-stable");
 
-@expose
-fn inc(): int {
-    var v = *count;
-    if (v == null) {
-        v = 0;
-    }
-    v = v + 1;
-    count.set(v);
-    return v;
-}
-
-@expose
-fn dec(): int {
-    var v = *count;
-    if (v == null) {
-        return 0;
-    }
-    v = v - 1;
-    count.set(v);
-    return v;
-}
+@include("src");

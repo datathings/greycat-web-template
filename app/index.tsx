@@ -1,21 +1,21 @@
-import '@greycat/web';
-import '@greycat/web/greycat.css';
-import './index.css';
+import "@greycat/web";
+import "@greycat/web/greycat.css";
+import "./index.css";
 
 const greycat = await gc.sdk.init({ debug: import.meta.env.DEV });
 
 const root = await greycat.root();
-const value = await root['project::count'].resolve() ?? 0;
+const value = (await root["counter::count"].resolve()) ?? 0;
 
 const count = document.createTextNode(`${value}`);
 
 async function inc() {
-  const value = await gc.project.inc();
+  const value = await gc.counter.inc();
   count.textContent = `${value}`;
 }
 
 async function dec() {
-  const value = await gc.project.dec();
+  const value = await gc.counter.dec();
   count.textContent = `${value}`;
 }
 
