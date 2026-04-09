@@ -1,0 +1,29 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.count-value {
+  font-size: var(--sl-font-size-4x-large);
+  font-weight: 700;
+  color: var(--primary);
+  padding-bottom: var(--spacing);
+}
+
+.count-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--spacing);
+}
+
+.count-actions {
+  display: flex;
+  gap: var(--spacing);
+}
+
+.count-actions sl-button {
+  font-size: var(--font-size-lg);
+}
