@@ -1,0 +1,19 @@
+var healthchecks: nodeTime<duration>;
+
+fn healthcheck(): duration {
+    var start = time::now();
+    Http {}.get("https://github.com", null);
+    var elapsed = time::now() - start;
+    healthchecks.setAt(start, elapsed);
+    return elapsed;
+}
+
+@expose
+fn get_avg(span: duration): Gaussian<duration> {
+    var now = time::now();
+    var gaussian = Gaussian<duration> {};
+    for (_, hc in healthchecks[now - span..now]) {
+        gaussian.add(hc);
+    }
+    return gaussian;
+}

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
+    "gen": "greycat codegen ts",
     "build": "tsc && vp build",
     "preview": "vp preview",
     "setup": "node scripts/setup.mjs",

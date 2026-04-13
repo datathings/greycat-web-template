@@ -1,7 +1,8 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 
-const CORE_LATEST = "https://get.greycat.io/files/core/stable/latest";
-const WEB_LATEST = "https://get.greycat.io/files/sdk/web/stable/latest";
+const CORE_LATEST = 'https://get.greycat.io/files/core/stable/latest';
+const WEB_LATEST = 'https://get.greycat.io/files/sdk/web/stable/latest';
 
 async function fetchVersion(url) {
   const res = await fetch(url);
@@ -10,7 +11,7 @@ async function fetchVersion(url) {
   }
   const text = (await res.text()).trim();
   // response is "major.minor/full-version", we only want the full version
-  return text.includes("/") ? text.split("/").pop() : text;
+  return text.includes('/') ? text.split('/').pop() : text;
 }
 
 const [coreVersion, webVersion] = await Promise.all([
@@ -18,22 +19,30 @@ const [coreVersion, webVersion] = await Promise.all([
   fetchVersion(WEB_LATEST),
 ]);
 
-console.log(`core: ${coreVersion}`);
-console.log(`web:  ${webVersion}`);
+console.log(`std: ${coreVersion}`);
+console.log(`web: ${webVersion}`);
 
 // update project.gcl
-const projectGcl = readFileSync("project.gcl", "utf-8");
+const projectGcl = readFileSync('project.gcl', 'utf-8');
 const updatedGcl = projectGcl.replace(
   /@library\("std",\s*"[^"]+"\)/,
   `@library("std", "${coreVersion}")`,
 );
-writeFileSync("project.gcl", updatedGcl);
+writeFileSync('project.gcl', updatedGcl);
 
 // update package.json
-const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
-const webMajorMinor = webVersion.replace(/-stable$/, "").replace(/\.\d+$/, "");
-pkg.dependencies["@greycat/web"] =
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
+const webMajorMinor = webVersion.replace(/-stable$/, '').replace(/\.\d+$/, '');
+pkg.dependencies['@greycat/web'] =
   `https://get.greycat.io/files/sdk/web/stable/${webMajorMinor}/${webVersion}.tgz`;
-writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
+writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
 
-console.log("project.gcl and package.json updated.");
+// run installs
+for (const [label, cmd] of [
+  ['pnpm install', 'pnpm install'],
+  ['greycat install', 'greycat install'],
+  ['greycat codegen ts', 'greycat codegen ts'],
+]) {
+  console.log(`\nRunning: ${label}`);
+  execSync(cmd, { stdio: 'inherit' });
+}

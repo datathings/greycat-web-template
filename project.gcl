@@ -1,3 +1,13 @@
 @library("std", "7.8.162-stable");
+@library("explorer", "7.8.18-stable");
 
 @include("src");
+
+fn main() {
+    Scheduler::add(healthcheck, FixedPeriodicity { every: 30s }, null);
+}
+
+@expose
+fn hello(name: String?): String {
+    return "Hello, ${name ?? "world"}!";
+}
